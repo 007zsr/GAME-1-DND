@@ -1,0 +1,620 @@
+[gd_scene load_steps=2 format=3 uid="uid://crflow20260408"]
+
+[ext_resource type="Script" path="res://character_creation/scripts/character_creation_flow.gd" id="1_flow"]
+
+[node name="CharacterCreationFlow" type="Control"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_flow")
+
+[node name="Step1Page" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Step1Page"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 72.0
+offset_top = 56.0
+offset_right = -72.0
+offset_bottom = -56.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
+
+[node name="Panel" type="PanelContainer" parent="Step1Page/MarginContainer"]
+layout_mode = 2
+
+[node name="Content" type="MarginContainer" parent="Step1Page/MarginContainer/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 28
+
+[node name="Stack" type="VBoxContainer" parent="Step1Page/MarginContainer/Panel/Content"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Title" type="Label" parent="Step1Page/MarginContainer/Panel/Content/Stack"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "第1步：职业选择"
+
+[node name="Hint" type="Label" parent="Step1Page/MarginContainer/Panel/Content/Stack"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+autowrap_mode = 3
+text = "请选择一个职业，然后进入下一步。"
+
+[node name="ClassScroll" type="ScrollContainer" parent="Step1Page/MarginContainer/Panel/Content/Stack"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 240)
+layout_mode = 2
+vertical_scroll_mode = 0
+
+[node name="Cards" type="HBoxContainer" parent="Step1Page/MarginContainer/Panel/Content/Stack/ClassScroll"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="WarriorCard" type="PanelContainer" parent="Step1Page/MarginContainer/Panel/Content/Stack/ClassScroll/Cards"]
+custom_minimum_size = Vector2(340, 210)
+layout_mode = 2
+
+[node name="CardContent" type="MarginContainer" parent="Step1Page/MarginContainer/Panel/Content/Stack/ClassScroll/Cards/WarriorCard"]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 18
+
+[node name="CardStack" type="VBoxContainer" parent="Step1Page/MarginContainer/Panel/Content/Stack/ClassScroll/Cards/WarriorCard/CardContent"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="CardTitle" type="Label" parent="Step1Page/MarginContainer/Panel/Content/Stack/ClassScroll/Cards/WarriorCard/CardContent/CardStack"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "战士"
+
+[node name="CardText" type="Label" parent="Step1Page/MarginContainer/Panel/Content/Stack/ClassScroll/Cards/WarriorCard/CardContent/CardStack"]
+layout_mode = 2
+size_flags_vertical = 3
+autowrap_mode = 3
+text = "当前唯一可选职业。偏向近战、生存与稳定输出。"
+
+[node name="WarriorCardButton" type="Button" parent="Step1Page/MarginContainer/Panel/Content/Stack/ClassScroll/Cards/WarriorCard/CardContent/CardStack"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+text = "选择战士"
+
+[node name="ClassStatusLabel" type="Label" parent="Step1Page/MarginContainer/Panel/Content/Stack"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+autowrap_mode = 3
+text = "状态"
+
+[node name="Footer" type="HBoxContainer" parent="Step1Page/MarginContainer/Panel/Content/Stack"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Step1BackButton" type="Button" parent="Step1Page/MarginContainer/Panel/Content/Stack/Footer"]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+text = "返回主界面"
+
+[node name="Step1NextButton" type="Button" parent="Step1Page/MarginContainer/Panel/Content/Stack/Footer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+text = "下一步"
+
+[node name="Step2Page" type="Control" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Step2Page"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 120.0
+offset_top = 96.0
+offset_right = -120.0
+offset_bottom = -96.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="Step2Page/MarginContainer"]
+layout_mode = 2
+
+[node name="Content" type="MarginContainer" parent="Step2Page/MarginContainer/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 28
+
+[node name="Stack" type="VBoxContainer" parent="Step2Page/MarginContainer/Panel/Content"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="StepTitleLabel" type="Label" parent="Step2Page/MarginContainer/Panel/Content/Stack"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "第2步 DEMO"
+
+[node name="StepHintLabel" type="Label" parent="Step2Page/MarginContainer/Panel/Content/Stack"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+autowrap_mode = 3
+text = "占位"
+
+[node name="Footer" type="HBoxContainer" parent="Step2Page/MarginContainer/Panel/Content/Stack"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Step2BackButton" type="Button" parent="Step2Page/MarginContainer/Panel/Content/Stack/Footer"]
+custom_minimum_size = Vector2(140, 50)
+layout_mode = 2
+text = "上一步"
+
+[node name="Step2NextButton" type="Button" parent="Step2Page/MarginContainer/Panel/Content/Stack/Footer"]
+custom_minimum_size = Vector2(140, 50)
+layout_mode = 2
+text = "下一步"
+
+[node name="Step3Page" type="Control" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Step3Page"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 120.0
+offset_top = 96.0
+offset_right = -120.0
+offset_bottom = -96.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="Step3Page/MarginContainer"]
+layout_mode = 2
+
+[node name="Content" type="MarginContainer" parent="Step3Page/MarginContainer/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 28
+
+[node name="Stack" type="VBoxContainer" parent="Step3Page/MarginContainer/Panel/Content"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="InfoLabel" type="Label" parent="Step3Page/MarginContainer/Panel/Content/Stack"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+autowrap_mode = 3
+text = "这一步暂作为DEMO占位。"
+
+[node name="Footer" type="HBoxContainer" parent="Step3Page/MarginContainer/Panel/Content/Stack"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Step3BackButton" type="Button" parent="Step3Page/MarginContainer/Panel/Content/Stack/Footer"]
+custom_minimum_size = Vector2(140, 50)
+layout_mode = 2
+text = "上一步"
+
+[node name="Step3NextButton" type="Button" parent="Step3Page/MarginContainer/Panel/Content/Stack/Footer"]
+custom_minimum_size = Vector2(140, 50)
+layout_mode = 2
+text = "下一步"
+
+[node name="Step4Page" type="Control" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Step4Page"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 120.0
+offset_top = 96.0
+offset_right = -120.0
+offset_bottom = -96.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="Step4Page/MarginContainer"]
+layout_mode = 2
+
+[node name="Content" type="MarginContainer" parent="Step4Page/MarginContainer/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 28
+
+[node name="Stack" type="VBoxContainer" parent="Step4Page/MarginContainer/Panel/Content"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="InfoLabel" type="Label" parent="Step4Page/MarginContainer/Panel/Content/Stack"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+autowrap_mode = 3
+text = "这一步暂作为DEMO占位。"
+
+[node name="Footer" type="HBoxContainer" parent="Step4Page/MarginContainer/Panel/Content/Stack"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Step4BackButton" type="Button" parent="Step4Page/MarginContainer/Panel/Content/Stack/Footer"]
+custom_minimum_size = Vector2(140, 50)
+layout_mode = 2
+text = "上一步"
+
+[node name="Step4NextButton" type="Button" parent="Step4Page/MarginContainer/Panel/Content/Stack/Footer"]
+custom_minimum_size = Vector2(140, 50)
+layout_mode = 2
+text = "下一步"
+
+[node name="Step5Page" type="Control" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Step5Page"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 120.0
+offset_top = 96.0
+offset_right = -120.0
+offset_bottom = -96.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="Step5Page/MarginContainer"]
+layout_mode = 2
+
+[node name="Content" type="MarginContainer" parent="Step5Page/MarginContainer/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 28
+
+[node name="Stack" type="VBoxContainer" parent="Step5Page/MarginContainer/Panel/Content"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="InfoLabel" type="Label" parent="Step5Page/MarginContainer/Panel/Content/Stack"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+autowrap_mode = 3
+text = "这一步暂作为DEMO占位。"
+
+[node name="Footer" type="HBoxContainer" parent="Step5Page/MarginContainer/Panel/Content/Stack"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Step5BackButton" type="Button" parent="Step5Page/MarginContainer/Panel/Content/Stack/Footer"]
+custom_minimum_size = Vector2(140, 50)
+layout_mode = 2
+text = "上一步"
+
+[node name="Step5NextButton" type="Button" parent="Step5Page/MarginContainer/Panel/Content/Stack/Footer"]
+custom_minimum_size = Vector2(140, 50)
+layout_mode = 2
+text = "下一步"
+
+[node name="Step6Page" type="Control" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Step6Page"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 72.0
+offset_top = 56.0
+offset_right = -72.0
+offset_bottom = -56.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
+
+[node name="Panel" type="PanelContainer" parent="Step6Page/MarginContainer"]
+layout_mode = 2
+
+[node name="Content" type="MarginContainer" parent="Step6Page/MarginContainer/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 28
+
+[node name="RootLayout" type="HBoxContainer" parent="Step6Page/MarginContainer/Panel/Content"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="PreviewPanel" type="PanelContainer" parent="Step6Page/MarginContainer/Panel/Content/RootLayout"]
+custom_minimum_size = Vector2(360, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PreviewMargin" type="MarginContainer" parent="Step6Page/MarginContainer/Panel/Content/RootLayout/PreviewPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 18
+
+[node name="PreviewStack" type="VBoxContainer" parent="Step6Page/MarginContainer/Panel/Content/RootLayout/PreviewPanel/PreviewMargin"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="PortraitTitle" type="Label" parent="Step6Page/MarginContainer/Panel/Content/RootLayout/PreviewPanel/PreviewMargin/PreviewStack"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "人物展示"
+
+[node name="PortraitPlaceholder" type="PanelContainer" parent="Step6Page/MarginContainer/Panel/Content/RootLayout/PreviewPanel/PreviewMargin/PreviewStack"]
+custom_minimum_size = Vector2(0, 340)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PortraitMargin" type="MarginContainer" parent="Step6Page/MarginContainer/Panel/Content/RootLayout/PreviewPanel/PreviewMargin/PreviewStack/PortraitPlaceholder"]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 18
+
+[node name="PortraitContent" type="VBoxContainer" parent="Step6Page/MarginContainer/Panel/Content/RootLayout/PreviewPanel/PreviewMargin/PreviewStack/PortraitPlaceholder/PortraitMargin"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 10
+
+[node name="PortraitNameLabel" type="Label" parent="Step6Page/MarginContainer/Panel/Content/RootLayout/PreviewPanel/PreviewMargin/PreviewStack/PortraitPlaceholder/PortraitMargin/PortraitContent"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 24
+text = "战士"
+
+[node name="PortraitHintLabel" type="Label" parent="Step6Page/MarginContainer/Panel/Content/RootLayout/PreviewPanel/PreviewMargin/PreviewStack/PortraitPlaceholder/PortraitMargin/PortraitContent"]
+layout_mode = 2
+horizontal_alignment = 1
+autowrap_mode = 3
+text = "当前没有人物美术资源，这里先用空白区域作为占位。"
+
+[node name="DetailsPanel" type="PanelContainer" parent="Step6Page/MarginContainer/Panel/Content/RootLayout"]
+custom_minimum_size = Vector2(540, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DetailsMargin" type="MarginContainer" parent="Step6Page/MarginContainer/Panel/Content/RootLayout/DetailsPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 18
+
+[node name="DetailsStack" type="VBoxContainer" parent="Step6Page/MarginContainer/Panel/Content/RootLayout/DetailsPanel/DetailsMargin"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="SelectedClassNameLabel" type="Label" parent="Step6Page/MarginContainer/Panel/Content/RootLayout/DetailsPanel/DetailsMargin/DetailsStack"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "战士"
+
+[node name="SelectedClassDescriptionLabel" type="Label" parent="Step6Page/MarginContainer/Panel/Content/RootLayout/DetailsPanel/DetailsMargin/DetailsStack"]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 3
+text = "职业描述"
+
+[node name="TopStatsRow" type="HBoxContainer" parent="Step6Page/MarginContainer/Panel/Content/RootLayout/DetailsPanel/DetailsMargin/DetailsStack"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="LevelLabel" type="Label" parent="Step6Page/MarginContainer/Panel/Content/RootLayout/DetailsPanel/DetailsMargin/DetailsStack/TopStatsRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "等级：1"
+
+[node name="PointsLabel" type="Label" parent="Step6Page/MarginContainer/Panel/Content/RootLayout/DetailsPanel/DetailsMargin/DetailsStack/TopStatsRow"]
+layout_mode = 2
+text = "剩余点数："
+
+[node name="PointsValueLabel" type="Label" parent="Step6Page/MarginContainer/Panel/Content/RootLayout/DetailsPanel/DetailsMargin/DetailsStack/TopStatsRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "0"
+
+[node name="ATitle" type="Label" parent="Step6Page/MarginContainer/Panel/Content/RootLayout/DetailsPanel/DetailsMargin/DetailsStack"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "A级属性"
+
+[node name="AStatsContainer" type="VBoxContainer" parent="Step6Page/MarginContainer/Panel/Content/RootLayout/DetailsPanel/DetailsMargin/DetailsStack"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="BTitle" type="Label" parent="Step6Page/MarginContainer/Panel/Content/RootLayout/DetailsPanel/DetailsMargin/DetailsStack"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "B级属性"
+
+[node name="BStatsContainer" type="VBoxContainer" parent="Step6Page/MarginContainer/Panel/Content/RootLayout/DetailsPanel/DetailsMargin/DetailsStack"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Footer" type="HBoxContainer" parent="Step6Page/MarginContainer/Panel/Content/RootLayout/DetailsPanel/DetailsMargin/DetailsStack"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="TotalCharactersLabel" type="Label" parent="Step6Page/MarginContainer/Panel/Content/RootLayout/DetailsPanel/DetailsMargin/DetailsStack/Footer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "已创建人物：0"
+
+[node name="Step6BackButton" type="Button" parent="Step6Page/MarginContainer/Panel/Content/RootLayout/DetailsPanel/DetailsMargin/DetailsStack/Footer"]
+custom_minimum_size = Vector2(130, 46)
+layout_mode = 2
+text = "上一步"
+
+[node name="Step6NextButton" type="Button" parent="Step6Page/MarginContainer/Panel/Content/RootLayout/DetailsPanel/DetailsMargin/DetailsStack/Footer"]
+custom_minimum_size = Vector2(170, 46)
+layout_mode = 2
+text = "进入确认页"
+
+[node name="ConfirmPage" type="Control" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="ConfirmPage"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 96.0
+offset_top = 72.0
+offset_right = -96.0
+offset_bottom = -72.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="ConfirmPage/MarginContainer"]
+layout_mode = 2
+
+[node name="Content" type="MarginContainer" parent="ConfirmPage/MarginContainer/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 32
+
+[node name="Stack" type="VBoxContainer" parent="ConfirmPage/MarginContainer/Panel/Content"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="Title" type="Label" parent="ConfirmPage/MarginContainer/Panel/Content/Stack"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "确认页面"
+
+[node name="ConfirmSummaryLabel" type="Label" parent="ConfirmPage/MarginContainer/Panel/Content/Stack"]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 3
+text = "创建信息"
+
+[node name="ConfirmHintLabel" type="Label" parent="ConfirmPage/MarginContainer/Panel/Content/Stack"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+autowrap_mode = 3
+text = "提示"
+
+[node name="Footer" type="HBoxContainer" parent="ConfirmPage/MarginContainer/Panel/Content/Stack"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="ConfirmBackButton" type="Button" parent="ConfirmPage/MarginContainer/Panel/Content/Stack/Footer"]
+custom_minimum_size = Vector2(140, 50)
+layout_mode = 2
+text = "上一步"
+
+[node name="ConfirmCreateButton" type="Button" parent="ConfirmPage/MarginContainer/Panel/Content/Stack/Footer"]
+custom_minimum_size = Vector2(190, 50)
+layout_mode = 2
+text = "确认人物创建"
+
+[connection signal="pressed" from="Step1Page/MarginContainer/Panel/Content/Stack/ClassScroll/Cards/WarriorCard/CardContent/CardStack/WarriorCardButton" to="." method="_on_warrior_card_button_pressed"]
+[connection signal="pressed" from="Step1Page/MarginContainer/Panel/Content/Stack/Footer/Step1BackButton" to="." method="_on_step_1_back_button_pressed"]
+[connection signal="pressed" from="Step1Page/MarginContainer/Panel/Content/Stack/Footer/Step1NextButton" to="." method="_on_step_1_next_button_pressed"]
+[connection signal="pressed" from="Step2Page/MarginContainer/Panel/Content/Stack/Footer/Step2BackButton" to="." method="_on_step_2_back_button_pressed"]
+[connection signal="pressed" from="Step2Page/MarginContainer/Panel/Content/Stack/Footer/Step2NextButton" to="." method="_on_step_2_next_button_pressed"]
+[connection signal="pressed" from="Step3Page/MarginContainer/Panel/Content/Stack/Footer/Step3BackButton" to="." method="_on_step_3_back_button_pressed"]
+[connection signal="pressed" from="Step3Page/MarginContainer/Panel/Content/Stack/Footer/Step3NextButton" to="." method="_on_step_3_next_button_pressed"]
+[connection signal="pressed" from="Step4Page/MarginContainer/Panel/Content/Stack/Footer/Step4BackButton" to="." method="_on_step_4_back_button_pressed"]
+[connection signal="pressed" from="Step4Page/MarginContainer/Panel/Content/Stack/Footer/Step4NextButton" to="." method="_on_step_4_next_button_pressed"]
+[connection signal="pressed" from="Step5Page/MarginContainer/Panel/Content/Stack/Footer/Step5BackButton" to="." method="_on_step_5_back_button_pressed"]
+[connection signal="pressed" from="Step5Page/MarginContainer/Panel/Content/Stack/Footer/Step5NextButton" to="." method="_on_step_5_next_button_pressed"]
+[connection signal="pressed" from="Step6Page/MarginContainer/Panel/Content/RootLayout/DetailsPanel/DetailsMargin/DetailsStack/Footer/Step6BackButton" to="." method="_on_step_6_back_button_pressed"]
+[connection signal="pressed" from="Step6Page/MarginContainer/Panel/Content/RootLayout/DetailsPanel/DetailsMargin/DetailsStack/Footer/Step6NextButton" to="." method="_on_step_6_next_button_pressed"]
+[connection signal="pressed" from="ConfirmPage/MarginContainer/Panel/Content/Stack/Footer/ConfirmBackButton" to="." method="_on_confirm_back_button_pressed"]
+[connection signal="pressed" from="ConfirmPage/MarginContainer/Panel/Content/Stack/Footer/ConfirmCreateButton" to="." method="_on_confirm_create_button_pressed"]

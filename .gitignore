@@ -1,0 +1,7 @@
+# Godot 4+ specific ignores
+.godot/
+.agent/
+debug_logs/
+logs
+godot.log
+godot*.log

@@ -1,0 +1,72 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://game/scripts/enemy_actor.gd" id="1_enemy"]
+[ext_resource type="Script" path="res://game/ai/enemy_ai_controller.gd" id="2_ai_controller"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_enemy_hurtbox"]
+size = Vector2(12, 12)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_enemy_detect"]
+radius = 64.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_enemy_attack"]
+radius = 18.0
+
+[node name="EnemyActor" type="Node2D"]
+script = ExtResource("1_enemy")
+
+[node name="AIController" type="Node" parent="."]
+script = ExtResource("2_ai_controller")
+
+[node name="Body" type="ColorRect" parent="."]
+offset_left = -6.0
+offset_top = -6.0
+offset_right = 6.0
+offset_bottom = 6.0
+color = Color(0.78, 0.58, 0.24, 1)
+
+[node name="HurtboxArea" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtboxArea"]
+shape = SubResource("RectangleShape2D_enemy_hurtbox")
+
+[node name="DetectArea" type="Area2D" parent="."]
+collision_layer = 8
+collision_mask = 1
+monitoring = true
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectArea"]
+shape = SubResource("CircleShape2D_enemy_detect")
+
+[node name="AttackArea" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 1
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea"]
+shape = SubResource("CircleShape2D_enemy_attack")
+
+[node name="AttackArc" type="Polygon2D" parent="."]
+visible = false
+color = Color(1, 0.65, 0.2, 0.5)
+polygon = PackedVector2Array(0, 0, 12, -8, 12, 8)
+
+[node name="NameLabel" type="Label" parent="."]
+offset_left = -32.0
+offset_top = -24.0
+offset_right = 32.0
+offset_bottom = -8.0
+horizontal_alignment = 1
+text = "敌人"
+
+[node name="HealthLabel" type="Label" parent="."]
+offset_left = -32.0
+offset_top = 10.0
+offset_right = 32.0
+offset_bottom = 24.0
+horizontal_alignment = 1
+text = "HP 100"

@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="AIPreset" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/ai/ai_preset.gd" id="1_preset"]
+[ext_resource type="Script" path="res://game/ai/brains/melee_brain.gd" id="2_brain"]
+
+[resource]
+script = ExtResource("1_preset")
+ai_id = "npc_guard_enemy_combat"
+brain_script = ExtResource("2_brain")
+detection_range = 7.5
+lose_target_delay = 3.2
+desired_range = 0.0
+ideal_range_min = 0.0
+ideal_range_max = 0.0
+kite_trigger_distance = 0.0
+panic_enter_distance = 0.0
+panic_exit_distance = 0.0
+retreat_speed_multiplier = 1.0
+allow_retreat = false
+allow_patrol = false
+prioritize_player = true
+low_health_phase_threshold = 0.0
+low_health_phase_ai_id = ""

@@ -1,0 +1,40 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/scripts/npc_dialogue_interactor.gd" id="1_npc"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_interaction"]
+radius = 20.0
+
+[node name="NPCDialogueInteractor" type="Node2D"]
+script = ExtResource("1_npc")
+
+[node name="Body" type="ColorRect" parent="."]
+offset_left = -8.0
+offset_top = -10.0
+offset_right = 8.0
+offset_bottom = 10.0
+color = Color(0.3, 0.46, 0.26, 1)
+
+[node name="InteractionArea" type="Area2D" parent="."]
+monitoring = true
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
+shape = SubResource("CircleShape2D_interaction")
+
+[node name="NameLabel" type="Label" parent="."]
+offset_left = -46.0
+offset_top = -44.0
+offset_right = 46.0
+offset_bottom = -20.0
+horizontal_alignment = 1
+text = "测试村民"
+
+[node name="PromptLabel" type="Label" parent="."]
+visible = false
+offset_left = -56.0
+offset_top = -68.0
+offset_right = 56.0
+offset_bottom = -46.0
+horizontal_alignment = 1
+text = "按 E 交谈"

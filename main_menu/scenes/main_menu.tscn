@@ -1,0 +1,224 @@
+[gd_scene load_steps=3 format=3 uid="uid://c3j5kec4w8d8p"]
+
+[ext_resource type="Script" path="res://main_menu/scripts/main_menu.gd" id="1_qw1x0"]
+[ext_resource type="PackedScene" uid="uid://emjxtsjrkvdf" path="res://character_creation/scenes/character_creation_flow.tscn" id="2_4ue3r"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_qw1x0")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0823529, 0.101961, 0.145098, 1)
+
+[node name="TopGlow" type="ColorRect" parent="."]
+layout_mode = 1
+offset_right = 1152.0
+offset_bottom = 220.0
+color = Color(0.188235, 0.364706, 0.564706, 0.35)
+
+[node name="BottomGlow" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -180.0
+grow_horizontal = 2
+grow_vertical = 0
+color = Color(0.0352941, 0.168627, 0.235294, 0.4)
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 64.0
+offset_top = 48.0
+offset_right = -64.0
+offset_bottom = -48.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
+
+[node name="RootLayout" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 48
+
+[node name="TitlePanel" type="PanelContainer" parent="MarginContainer/RootLayout"]
+custom_minimum_size = Vector2(420, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TitleContent" type="MarginContainer" parent="MarginContainer/RootLayout/TitlePanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 32
+
+[node name="TitleStack" type="VBoxContainer" parent="MarginContainer/RootLayout/TitlePanel/TitleContent"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="Eyebrow" type="Label" parent="MarginContainer/RootLayout/TitlePanel/TitleContent/TitleStack"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.654902, 0.85098, 0.956863, 1)
+theme_override_font_sizes/font_size = 18
+text = "独立主菜单 DEMO"
+
+[node name="GameTitle" type="Label" parent="MarginContainer/RootLayout/TitlePanel/TitleContent/TitleStack"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.94902, 0.964706, 1, 1)
+theme_override_font_sizes/font_size = 54
+text = "2026 4 8 Game"
+
+[node name="Description" type="Label" parent="MarginContainer/RootLayout/TitlePanel/TitleContent/TitleStack"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.745098, 0.784314, 0.866667, 1)
+theme_override_font_sizes/font_size = 20
+text = "这是一个独立的主菜单演示页面。目前不依赖游戏系统或美术资源。"
+autowrap_mode = 3
+
+[node name="MenuPanel" type="PanelContainer" parent="MarginContainer/RootLayout"]
+custom_minimum_size = Vector2(360, 0)
+layout_mode = 2
+
+[node name="MenuContent" type="MarginContainer" parent="MarginContainer/RootLayout/MenuPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 28
+
+[node name="MenuStack" type="VBoxContainer" parent="MarginContainer/RootLayout/MenuPanel/MenuContent"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="MenuTitle" type="Label" parent="MarginContainer/RootLayout/MenuPanel/MenuContent/MenuStack"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.94902, 0.964706, 1, 1)
+theme_override_font_sizes/font_size = 28
+text = "主界面"
+
+[node name="StartButton" type="Button" parent="MarginContainer/RootLayout/MenuPanel/MenuContent/MenuStack"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 58)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "开始游戏"
+
+[node name="SettingsButton" type="Button" parent="MarginContainer/RootLayout/MenuPanel/MenuContent/MenuStack"]
+custom_minimum_size = Vector2(0, 58)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "设置"
+
+[node name="QuitButton" type="Button" parent="MarginContainer/RootLayout/MenuPanel/MenuContent/MenuStack"]
+custom_minimum_size = Vector2(0, 58)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "退出游戏"
+
+[node name="StatusLabel" type="Label" parent="MarginContainer/RootLayout/MenuPanel/MenuContent/MenuStack"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.733333, 0.811765, 0.901961, 1)
+theme_override_font_sizes/font_size = 18
+text = "状态信息"
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="SettingsPanel" type="PanelContainer" parent="MarginContainer/RootLayout/MenuPanel/MenuContent"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="SettingsContent" type="MarginContainer" parent="MarginContainer/RootLayout/MenuPanel/MenuContent/SettingsPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="SettingsStack" type="VBoxContainer" parent="MarginContainer/RootLayout/MenuPanel/MenuContent/SettingsPanel/SettingsContent"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="SettingsTitle" type="Label" parent="MarginContainer/RootLayout/MenuPanel/MenuContent/SettingsPanel/SettingsContent/SettingsStack"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.94902, 0.964706, 1, 1)
+theme_override_font_sizes/font_size = 28
+text = "设置 DEMO"
+
+[node name="VolumeHeader" type="HBoxContainer" parent="MarginContainer/RootLayout/MenuPanel/MenuContent/SettingsPanel/SettingsContent/SettingsStack"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="VolumeLabel" type="Label" parent="MarginContainer/RootLayout/MenuPanel/MenuContent/SettingsPanel/SettingsContent/SettingsStack/VolumeHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.890196, 0.92549, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "主音量"
+
+[node name="VolumeValueLabel" type="Label" parent="MarginContainer/RootLayout/MenuPanel/MenuContent/SettingsPanel/SettingsContent/SettingsStack/VolumeHeader"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(52, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.654902, 0.85098, 0.956863, 1)
+theme_override_font_sizes/font_size = 20
+text = "100"
+horizontal_alignment = 2
+
+[node name="VolumeSlider" type="HSlider" parent="MarginContainer/RootLayout/MenuPanel/MenuContent/SettingsPanel/SettingsContent/SettingsStack"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+value = 100.0
+
+[node name="VolumeRangeLabel" type="Label" parent="MarginContainer/RootLayout/MenuPanel/MenuContent/SettingsPanel/SettingsContent/SettingsStack"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.733333, 0.811765, 0.901961, 1)
+theme_override_font_sizes/font_size = 16
+text = "可选范围：0 - 100"
+
+[node name="SettingsHint" type="Label" parent="MarginContainer/RootLayout/MenuPanel/MenuContent/SettingsPanel/SettingsContent/SettingsStack"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.733333, 0.811765, 0.901961, 1)
+theme_override_font_sizes/font_size = 16
+text = "拖动滑块时，会实时显示当前音量大小。"
+autowrap_mode = 3
+
+[node name="BackButton" type="Button" parent="MarginContainer/RootLayout/MenuPanel/MenuContent/SettingsPanel/SettingsContent/SettingsStack"]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "返回主界面"
+
+[node name="CharacterCreation" parent="." instance=ExtResource("2_4ue3r")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[connection signal="pressed" from="MarginContainer/RootLayout/MenuPanel/MenuContent/MenuStack/StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="MarginContainer/RootLayout/MenuPanel/MenuContent/MenuStack/SettingsButton" to="." method="_on_settings_button_pressed"]
+[connection signal="pressed" from="MarginContainer/RootLayout/MenuPanel/MenuContent/MenuStack/QuitButton" to="." method="_on_quit_button_pressed"]
+[connection signal="value_changed" from="MarginContainer/RootLayout/MenuPanel/MenuContent/SettingsPanel/SettingsContent/SettingsStack/VolumeSlider" to="." method="_on_volume_slider_value_changed"]
+[connection signal="pressed" from="MarginContainer/RootLayout/MenuPanel/MenuContent/SettingsPanel/SettingsContent/SettingsStack/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="back_requested" from="CharacterCreation" to="." method="_on_character_creation_back_requested"]
+[connection signal="character_created" from="CharacterCreation" to="." method="_on_character_creation_character_created"]
