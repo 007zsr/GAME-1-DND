@@ -1,0 +1,142 @@
+[gd_resource type="SpriteFrames" load_steps=14 format=3]
+
+[ext_resource type="Texture2D" path="res://game/assets/textures/characters/enemies/ranged_grunt/spritesheets/ranged_grunt_sheet_v001.png" id="1_sheet"]
+
+[sub_resource type="AtlasTexture" id="1_down_0"]
+atlas = ExtResource("1_sheet")
+region = Rect2(103, 71, 180, 270)
+
+[sub_resource type="AtlasTexture" id="2_down_1"]
+atlas = ExtResource("1_sheet")
+region = Rect2(421, 71, 180, 270)
+
+[sub_resource type="AtlasTexture" id="3_down_2"]
+atlas = ExtResource("1_sheet")
+region = Rect2(729, 71, 180, 270)
+
+[sub_resource type="AtlasTexture" id="4_up_0"]
+atlas = ExtResource("1_sheet")
+region = Rect2(103, 364, 180, 270)
+
+[sub_resource type="AtlasTexture" id="5_up_1"]
+atlas = ExtResource("1_sheet")
+region = Rect2(421, 364, 180, 270)
+
+[sub_resource type="AtlasTexture" id="6_up_2"]
+atlas = ExtResource("1_sheet")
+region = Rect2(729, 364, 180, 270)
+
+[sub_resource type="AtlasTexture" id="7_left_0"]
+atlas = ExtResource("1_sheet")
+region = Rect2(103, 675, 180, 270)
+
+[sub_resource type="AtlasTexture" id="8_left_1"]
+atlas = ExtResource("1_sheet")
+region = Rect2(421, 675, 180, 270)
+
+[sub_resource type="AtlasTexture" id="9_left_2"]
+atlas = ExtResource("1_sheet")
+region = Rect2(729, 675, 180, 270)
+
+[sub_resource type="AtlasTexture" id="10_right_0"]
+atlas = ExtResource("1_sheet")
+region = Rect2(103, 997, 180, 270)
+
+[sub_resource type="AtlasTexture" id="11_right_1"]
+atlas = ExtResource("1_sheet")
+region = Rect2(421, 997, 180, 270)
+
+[sub_resource type="AtlasTexture" id="12_right_2"]
+atlas = ExtResource("1_sheet")
+region = Rect2(729, 997, 180, 270)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("2_down_1")
+}],
+"loop": true,
+"name": &"idle_down",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("5_up_1")
+}],
+"loop": true,
+"name": &"idle_up",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("8_left_1")
+}],
+"loop": true,
+"name": &"idle_left",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("11_right_1")
+}],
+"loop": true,
+"name": &"idle_right",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("1_down_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("2_down_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("3_down_2")
+}],
+"loop": true,
+"name": &"move_down",
+"speed": 7.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("4_up_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("5_up_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("6_up_2")
+}],
+"loop": true,
+"name": &"move_up",
+"speed": 7.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("7_left_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("8_left_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("9_left_2")
+}],
+"loop": true,
+"name": &"move_left",
+"speed": 7.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("10_right_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("11_right_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("12_right_2")
+}],
+"loop": true,
+"name": &"move_right",
+"speed": 7.0
+}]

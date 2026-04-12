@@ -72,6 +72,22 @@ func unregister_scene_adapter(adapter: Node) -> void:
 	dialogue_ui = null
 
 
+func get_scene_adapter() -> Node:
+	return scene_adapter
+
+
+func get_registered_player() -> Node:
+	return player
+
+
+func get_dialogue_ui_parent() -> Node:
+	return dialogue_ui_parent
+
+
+func get_registered_hover_detail_manager() -> Control:
+	return hover_detail_manager
+
+
 func get_dialogue_flags() -> Dictionary:
 	return dialogue_flags.duplicate(true)
 

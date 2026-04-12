@@ -6,6 +6,7 @@ const ItemSystem = preload("res://game/scripts/item_system.gd")
 const PlayerMenuSceneScript = preload("res://game/scripts/player_menu_ui_v2.gd")
 const ChestMenuScript = preload("res://game/scripts/chest_menu_ui_v2.gd")
 const HoverDetailManagerScript = preload("res://game/scripts/hover_detail_manager.gd")
+const GameplaySceneContract = preload("res://game/scripts/gameplay_scene_contract.gd")
 
 signal stage_clear_placeholder_triggered
 
@@ -17,6 +18,8 @@ const PROJECTILE_SCENE_PATH := "res://game/scenes/enemy_projectile.tscn"
 const CHEST_SCENE_PATH := "res://game/scenes/chest_interactable_v2.tscn"
 const NPC_DIALOGUE_SCENE_PATH := "res://game/scenes/npc_dialogue_interactor.tscn"
 const MAIN_MENU_SCENE_PATH := "res://main_menu/scenes/main_menu.tscn"
+const SPAWN_GODDESS_DIALOGUE_ID := "spawn_goddess_intro"
+const TUTORIAL_CLEAR_DIALOGUE_ID := "tutorial_boss_clear_goddess"
 const BLOCK_DAMAGE_MULTIPLIER := 0.5
 const FLOATING_TEXT_LIFETIME := 0.75
 const A_STAT_DISPLAY_ORDER := CharacterStats.A_STAT_ORDER
@@ -72,17 +75,32 @@ const ENEMY_TEMPLATES := {
 		"attack_cooldown": 1.35,
 		"windup": 0.3,
 		"recovery": 0.25,
-		"size_meters": Vector2(0.45, 0.45),
+	"size_meters": Vector2(0.45, 0.45),
 		"display_color": Color(0.76, 0.67, 0.36, 1.0),
 		"label_font_size": 9,
-		"skill": {
-			"type": "sector",
-			"name": "\u5c0f\u5175\u65a9\u51fb",
-			"range_meters": 0.95,
-			"arc_degrees": 110.0,
-			"damage": 14,
-			"flash_duration": 0.18,
-			"effect_color": Color(1.0, 0.76, 0.42, 0.72),
+		"hp_bar_style": "red",
+		"show_name": true,
+		"body_visual": {
+			"sprite_frames_path": "res://game/assets/textures/characters/enemies/melee_grunt/animations/melee_grunt_sprite_frames_v001.tres",
+			"sheet_path": "res://game/assets/textures/characters/enemies/melee_grunt/spritesheets/melee_grunt_sheet_v001.png",
+			"display_scale": 0.0625,
+			"anchor_offset_pixels": Vector2(0.0, -8.0),
+			"default_facing": "down",
+			"use_raw_texture_colors": true,
+			"frame_sets": {
+				"idle_down": [Rect2(421, 71, 180, 270)],
+				"idle_up": [Rect2(421, 364, 180, 270)],
+				"idle_left": [Rect2(421, 997, 180, 270)],
+				"idle_right": [Rect2(421, 675, 180, 270)],
+				"move_down": [Rect2(103, 71, 180, 270), Rect2(421, 71, 180, 270), Rect2(729, 71, 180, 270)],
+				"move_up": [Rect2(103, 364, 180, 270), Rect2(421, 364, 180, 270), Rect2(729, 364, 180, 270)],
+				"move_left": [Rect2(103, 997, 180, 270), Rect2(421, 997, 180, 270), Rect2(729, 997, 180, 270)],
+				"move_right": [Rect2(103, 675, 180, 270), Rect2(421, 675, 180, 270), Rect2(729, 675, 180, 270)],
+			},
+		},
+		"skill_ids": ["melee_grunt_slash"],
+		"skill_bindings": {
+			"primary": "melee_grunt_slash",
 		},
 		"phase_two": {
 			"cooldown_multiplier": 1.0,
@@ -107,20 +125,36 @@ const ENEMY_TEMPLATES := {
 		"fallback_attack_range": 1.5,
 		"fallback_attack_arc_degrees": 100.0,
 		"fallback_attack_name": "\u8fd1\u8eab\u53cd\u51fb",
-		"size_meters": Vector2(0.42, 0.42),
+	"size_meters": Vector2(0.42, 0.42),
 		"display_color": Color(0.50, 0.72, 0.86, 1.0),
 		"label_font_size": 9,
-		"skill": {
-			"type": "projectile",
-			"name": "\u80fd\u91cf\u5f39",
-			"range_meters": 6.0,
-			"arc_degrees": 60.0,
-			"damage": 11,
-			"flash_duration": 0.14,
-			"effect_color": Color(0.72, 0.88, 1.0, 0.92),
-			"projectile_speed_mps": 5.0,
-			"projectile_range_meters": 8.0,
-			"projectile_size_meters": Vector2(0.2, 0.2),
+		"hp_bar_style": "red",
+		"show_name": true,
+		"overhead_display_overrides": {
+			"head_display_offset_y": -22.0,
+		},
+		"body_visual": {
+			"sprite_frames_path": "res://game/assets/textures/characters/enemies/ranged_grunt/animations/ranged_grunt_sprite_frames_v001.tres",
+			"sheet_path": "res://game/assets/textures/characters/enemies/ranged_grunt/spritesheets/ranged_grunt_sheet_v001.png",
+			"display_scale": 0.0625,
+			"anchor_offset_pixels": Vector2(0.0, -8.0),
+			"default_facing": "down",
+			"use_raw_texture_colors": true,
+			"frame_sets": {
+				"idle_down": [Rect2(421, 71, 180, 270)],
+				"idle_up": [Rect2(421, 364, 180, 270)],
+				"idle_left": [Rect2(421, 997, 180, 270)],
+				"idle_right": [Rect2(421, 675, 180, 270)],
+				"move_down": [Rect2(103, 71, 180, 270), Rect2(421, 71, 180, 270), Rect2(729, 71, 180, 270)],
+				"move_up": [Rect2(103, 364, 180, 270), Rect2(421, 364, 180, 270), Rect2(729, 364, 180, 270)],
+				"move_left": [Rect2(103, 997, 180, 270), Rect2(421, 997, 180, 270), Rect2(729, 997, 180, 270)],
+				"move_right": [Rect2(103, 675, 180, 270), Rect2(421, 675, 180, 270), Rect2(729, 675, 180, 270)],
+			},
+		},
+		"skill_ids": ["ranged_grunt_energy_shot", "ranged_grunt_close_counter"],
+		"skill_bindings": {
+			"primary": "ranged_grunt_energy_shot",
+			"fallback": "ranged_grunt_close_counter",
 		},
 		"phase_two": {
 			"cooldown_multiplier": 1.0,
@@ -133,21 +167,62 @@ const ENEMY_TEMPLATES := {
 		"role": "boss",
 		"max_health": 320,
 		"move_speed": 1.35,
-		"attack_range": 2.4,
+		"attack_range": 1.4,
 		"attack_cooldown": 2.5,
 		"windup": 0.6,
 		"recovery": 0.55,
-		"size_meters": Vector2(0.9, 0.9),
+	"size_meters": Vector2(0.9, 0.9),
 		"display_color": Color(0.76, 0.32, 0.32, 1.0),
 		"label_font_size": 10,
-		"skill": {
-			"type": "sector",
-			"name": "\u5f3a\u5316\u65a9\u51fb",
-			"range_meters": 2.4,
-			"arc_degrees": 140.0,
-			"damage": 28,
-			"flash_duration": 0.24,
-			"effect_color": Color(1.0, 0.44, 0.44, 0.82),
+		"hp_bar_style": "boss_red_large",
+		"show_name": true,
+		"body_visual": {
+			"sprite_frames_path": "",
+			"sheet_path": "res://game/assets/textures/characters/enemies/newbie_boss/spritesheets/newbie_boss_sheet_v002.png",
+			"display_scale": 0.0625,
+			"anchor_offset_pixels": Vector2(0.0, -10.0),
+			"default_facing": "down",
+			"use_raw_texture_colors": true,
+			"frame_sets": {
+				"idle_down": [Rect2(33, 0, 265, 1024)],
+				"idle_up": [Rect2(29, 1024, 268, 1024)],
+				"idle_left": [Rect2(40, 2048, 259, 1024)],
+				"idle_right": [Rect2(21, 3072, 248, 1024)],
+				"move_down": [
+					Rect2(33, 0, 265, 1024),
+					Rect2(299, 0, 278, 1024),
+					Rect2(578, 0, 286, 1024),
+					Rect2(865, 0, 326, 1024),
+					Rect2(1192, 0, 315, 1024),
+				],
+				"move_up": [
+					Rect2(29, 1024, 268, 1024),
+					Rect2(298, 1024, 281, 1024),
+					Rect2(580, 1024, 290, 1024),
+					Rect2(871, 1024, 320, 1024),
+					Rect2(1192, 1024, 310, 1024),
+				],
+				"move_left": [
+					Rect2(40, 2048, 259, 1024),
+					Rect2(300, 2048, 253, 1024),
+					Rect2(554, 2048, 240, 1024),
+					Rect2(795, 2048, 249, 1024),
+					Rect2(1045, 2048, 236, 1024),
+					Rect2(1282, 2048, 235, 1024),
+				],
+				"move_right": [
+					Rect2(21, 3072, 248, 1024),
+					Rect2(270, 3072, 256, 1024),
+					Rect2(527, 3072, 265, 1024),
+					Rect2(793, 3072, 256, 1024),
+					Rect2(1050, 3072, 235, 1024),
+					Rect2(1286, 3072, 231, 1024),
+				],
+			},
+		},
+		"skill_ids": ["boss_guardian_triple_cleave"],
+		"skill_bindings": {
+			"primary": "boss_guardian_triple_cleave",
 		},
 		"phase_two": {
 			"cooldown_multiplier": 0.72,
@@ -169,6 +244,8 @@ const GODDESS_ACTOR_CONFIG := {
 	"size_meters": Vector2(0.7, 1.1),
 	"display_color": Color(0.90, 0.84, 0.56, 1.0),
 	"label_font_size": 10,
+	"hp_bar_style": "none",
+	"show_name": true,
 	"show_name_label": true,
 	"show_health_label": false,
 }
@@ -198,6 +275,10 @@ var active_overlay_control: Control
 var chest_layer: Node2D
 var dialogue_context_active: bool = false
 var last_dialogue_action_request: Dictionary = {}
+var goddess_actor: Node2D
+var tutorial_completion_started: bool = false
+var tutorial_transition_pending: bool = false
+var gameplay_scene_self_check_errors: Array[String] = []
 
 @onready var ground: ColorRect = $Ground
 @onready var grid_overlay: Polygon2D = $GridOverlay
@@ -230,6 +311,7 @@ func _ready() -> void:
 	_spawn_room_enemies()
 	_register_dialogue_scene_adapter()
 	_update_ui()
+	call_deferred("_run_gameplay_scene_self_check")
 
 
 func _process(_delta: float) -> void:
@@ -245,6 +327,18 @@ func _exit_tree() -> void:
 
 func get_player_node() -> Node2D:
 	return player
+
+
+func get_overlay_root() -> CanvasLayer:
+	return canvas_layer
+
+
+func get_gameplay_scene_self_check_errors() -> Array[String]:
+	return gameplay_scene_self_check_errors.duplicate()
+
+
+func get_gameplay_scene_contract_snapshot() -> Dictionary:
+	return GameplaySceneContract.build_scene_snapshot(self)
 
 
 func get_player_global_position() -> Vector2:
@@ -287,7 +381,8 @@ func close_overlay(overlay_control: Control) -> void:
 
 
 func begin_dialogue_context(overlay_control: Control, _context: Dictionary = {}) -> bool:
-	if battle_result_locked or is_overlay_open():
+	var allow_tutorial_transition_dialogue: bool = battle_result_locked and current_result_type == "tutorial_clear" and tutorial_transition_pending
+	if (battle_result_locked and not allow_tutorial_transition_dialogue) or (is_overlay_open() and not allow_tutorial_transition_dialogue):
 		return false
 	active_overlay_control = overlay_control
 	dialogue_context_active = true
@@ -343,7 +438,10 @@ func handle_dialogue_action(action_type: String, payload: Dictionary, _manager: 
 			_show_floating_text(player.global_position, "鏁屽鍏ュ彛棰勭暀", Color(1.0, 0.74, 0.74, 1.0), 16)
 			return true
 		"call_hook":
-			_show_floating_text(player.global_position, "鍓ф儏閽╁瓙锛?s" % str(payload.get("hook_id", "")), Color(1.0, 0.92, 0.72, 1.0), 16)
+			var hook_id := str(payload.get("hook_id", ""))
+			if hook_id == "transition_to_god_space":
+				return _transition_to_god_space()
+			_show_floating_text(player.global_position, "剧情钩子：%s" % hook_id, Color(1.0, 0.92, 0.72, 1.0), 16)
 			return true
 		_:
 			return false
@@ -532,7 +630,7 @@ func _show_floating_text(world_position: Vector2, text: String, color: Color, fo
 
 func _on_enemy_died(enemy: Node2D) -> void:
 	var was_boss: bool = enemy.has_method("is_boss") and enemy.is_boss()
-	if was_boss and not battle_result_locked:
+	if was_boss and not battle_result_locked and not tutorial_completion_started:
 		_show_boss_clear_result()
 
 	enemy_registry.erase(enemy.get_instance_id())
@@ -546,7 +644,7 @@ func _update_ui() -> void:
 	if game_state != null and "current_character" in game_state:
 		current_character = game_state.current_character
 	var created_class_name: String = str(current_character.get("class_name", "\u6218\u58eb"))
-	village_info_label.text = "\u51fa\u751f\u533a\u57df  |  \u5f53\u524d\u623f\u95f4\uff1a%s  |  \u804c\u4e1a\uff1a%s  |  \u5b58\u6d3b\u654c\u4eba\uff1a%d" % [
+	village_info_label.text = "新手教程房  |  当前房间：%s  |  职业：%s  |  存活敌人：%d" % [
 		current_room_name,
 		created_class_name,
 		_count_hostile_enemies(),
@@ -583,6 +681,16 @@ func _register_dialogue_scene_adapter() -> void:
 	if dialogue_manager == null or not dialogue_manager.has_method("register_scene_adapter"):
 		return
 	dialogue_manager.register_scene_adapter(self, player, canvas_layer, hover_detail_manager)
+
+
+func _run_gameplay_scene_self_check() -> void:
+	gameplay_scene_self_check_errors = GameplaySceneContract.validate_scene(self, {
+		"require_dialogue_registration": true,
+	})
+	if gameplay_scene_self_check_errors.is_empty():
+		return
+	for error_text in gameplay_scene_self_check_errors:
+		push_error("GameplaySceneContract[%s] %s" % [scene_file_path, error_text])
 
 
 func _force_close_active_dialogue(reason: String) -> void:
@@ -668,7 +776,7 @@ func _setup_result_panels() -> void:
 
 	var clear_title := Label.new()
 	clear_title.name = "TitleLabel"
-	clear_title.text = "\u6210\u529f\u8fc7\u5173"
+	clear_title.text = "教程完成"
 	clear_title.add_theme_font_size_override("font_size", 30)
 	clear_stack.add_child(clear_title)
 
@@ -695,13 +803,14 @@ func _setup_result_panels() -> void:
 	boss_description_label = Label.new()
 	boss_description_label.name = "DescriptionLabel"
 	boss_description_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	boss_description_label.text = "Boss \u5df2\u88ab\u51fb\u8d25\u3002\u4e0b\u4e00\u5173\u6309\u94ae\u5f53\u524d\u4e3a\u5360\u4f4d\u529f\u80fd\u3002"
+	boss_description_label.text = "教程 Boss 已被击败。女神的过场会在这里承接，不再进入旧的下一关占位逻辑。"
 	clear_stack.add_child(boss_description_label)
 
 	next_level_button = Button.new()
 	next_level_button.name = "NextLevelButton"
-	next_level_button.text = "\u4e0b\u4e00\u5173"
+	next_level_button.text = "继续过场"
 	next_level_button.custom_minimum_size = Vector2(140.0, 48.0)
+	next_level_button.visible = false
 	next_level_button.pressed.connect(_on_next_level_button_pressed)
 	clear_stack.add_child(next_level_button)
 
@@ -745,11 +854,12 @@ func _spawn_interactables() -> void:
 	var goddess: Node2D = actor_scene.instantiate()
 	chest_layer.add_child(goddess)
 	goddess.setup_actor(GODDESS_ACTOR_CONFIG, self, Vector2(17.4, 19.8), METERS_TO_PIXELS, "npc_guard_friendly_idle", "friendly")
+	goddess_actor = goddess
 
 	var goddess_dialogue: Node2D = npc_scene.instantiate()
 	goddess_dialogue.name = "DialogueInteractor"
 	goddess.add_child(goddess_dialogue)
-	goddess_dialogue.configure_on_host(self, player, goddess, METERS_TO_PIXELS, "spawn_goddess_intro", "复活女神")
+	goddess_dialogue.configure_on_host(self, player, goddess, METERS_TO_PIXELS, SPAWN_GODDESS_DIALOGUE_ID, "复活女神")
 
 
 func _set_subtree_process_mode(root: Node, mode: int) -> void:
@@ -837,13 +947,19 @@ func _show_death_result() -> void:
 
 
 func _show_boss_clear_result() -> void:
-	_begin_battle_result("boss_clear")
+	if tutorial_completion_started:
+		return
+	tutorial_completion_started = true
 	stage_clear_placeholder_active = true
 	emit_signal("stage_clear_placeholder_triggered")
+	_mark_tutorial_completed_in_game_state()
+	_begin_battle_result("tutorial_clear")
 	_hide_result_panels()
 	_refresh_boss_clear_stats()
-	boss_description_label.text = "Boss \u5df2\u88ab\u51fb\u8d25\u3002\u8fc7\u5173\u626d\u673a\u5360\u4f4d\u7b26\u5df2\u6fc0\u6d3b\uff0c\u4e0b\u4e00\u5173\u6309\u94ae\u5f53\u524d\u4ec5\u4f5c\u5c55\u793a\u3002"
-	boss_clear_panel.visible = true
+	boss_description_label.text = "教程 Boss 已被击败。复活女神会接管接下来的过场，并把你送往主神空间。"
+	tutorial_transition_pending = true
+	next_level_button.visible = false
+	call_deferred("_start_tutorial_completion_dialogue")
 
 
 func _begin_battle_result(result_type: String) -> void:
@@ -897,7 +1013,61 @@ func _on_exit_button_pressed() -> void:
 
 
 func _on_next_level_button_pressed() -> void:
-	boss_description_label.text = "\u4e0b\u4e00\u5173\u6309\u94ae\u5df2\u70b9\u51fb\u3002\u5f53\u524d\u4ecd\u4e3a\u5360\u4f4d\u903b\u8f91\uff0c\u4e0d\u4f1a\u5207\u56fe\uff0c\u4e5f\u4e0d\u4f1a\u6062\u590d\u6e38\u620f\u3002"
+	if not tutorial_transition_pending:
+		return
+	next_level_button.visible = false
+	boss_clear_panel.visible = false
+	call_deferred("_start_tutorial_completion_dialogue")
+
+
+func _start_tutorial_completion_dialogue() -> void:
+	if not tutorial_transition_pending:
+		return
+	var dialogue_manager: Node = get_node_or_null("/root/DialogueManager")
+	if dialogue_manager == null or not dialogue_manager.has_method("start_dialogue"):
+		_show_tutorial_transition_fallback("DialogueManager unavailable")
+		return
+	var source_node: Node = goddess_actor if goddess_actor != null and is_instance_valid(goddess_actor) else self
+	var dialogue_started: bool = bool(dialogue_manager.start_dialogue(TUTORIAL_CLEAR_DIALOGUE_ID, source_node, {"flow": "tutorial_clear"}))
+	if not dialogue_started:
+		_show_tutorial_transition_fallback("tutorial clear dialogue failed to start")
+
+
+func _show_tutorial_transition_fallback(reason: String) -> void:
+	_refresh_boss_clear_stats()
+	boss_description_label.text = "教程完成过场暂时没有成功打开（%s）。点击下方按钮会重试女神过场，不再进入旧的下一关逻辑。" % reason
+	next_level_button.visible = true
+	boss_clear_panel.visible = true
+
+
+func _mark_tutorial_completed_in_game_state() -> void:
+	var game_state: Node = get_node_or_null("/root/GameState")
+	if game_state == null:
+		return
+	if game_state.has_method("mark_tutorial_completed"):
+		game_state.mark_tutorial_completed()
+	if game_state.has_method("set_event_flag"):
+		game_state.set_event_flag("tutorial_completed", true)
+
+
+func _transition_to_god_space() -> bool:
+	if not tutorial_transition_pending:
+		return false
+	var game_state: Node = get_node_or_null("/root/GameState")
+	var target_scene_path := "res://game/scenes/god_space_hub.tscn"
+	if game_state != null:
+		if game_state.has_method("mark_entered_god_space"):
+			game_state.mark_entered_god_space()
+		if game_state.has_method("get_god_space_scene_path"):
+			target_scene_path = str(game_state.get_god_space_scene_path())
+	tutorial_transition_pending = false
+	boss_clear_panel.visible = false
+	next_level_button.visible = false
+	get_tree().paused = false
+	if player != null and player.has_method("unlock_gameplay"):
+		player.unlock_gameplay()
+	get_tree().change_scene_to_file(target_scene_path)
+	return true
 
 
 func _build_room_layout() -> void:

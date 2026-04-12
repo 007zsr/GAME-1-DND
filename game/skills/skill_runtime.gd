@@ -26,6 +26,7 @@ static func normalize_skill_definition(definition: Dictionary) -> Dictionary:
 		"summary": str(definition.get("summary", definition.get("description", ""))),
 		"execution_key": str(definition.get("execution_key", definition.get("logic_key", ""))),
 		"parameters": (definition.get("parameters", {}) as Dictionary).duplicate(true),
+		"visual": (definition.get("visual", {}) as Dictionary).duplicate(true),
 	}
 	return normalized
 

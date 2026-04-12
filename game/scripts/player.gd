@@ -4,6 +4,8 @@ const GameLayers = preload("res://game/scripts/game_layers.gd")
 const CharacterStats = preload("res://game/scripts/character_stats.gd")
 const ItemSystem = preload("res://game/scripts/item_system.gd")
 const ModifierSystem = preload("res://game/scripts/modifier_system.gd")
+const OverheadDisplayScene = preload("res://game/scenes/overhead_display.tscn")
+const OverheadDisplayScript = preload("res://game/scripts/overhead_display.gd")
 const SkillExecutor = preload("res://game/skills/skill_executor.gd")
 const SkillRegistry = preload("res://game/skills/skill_registry.gd")
 const SkillRuntime = preload("res://game/skills/skill_runtime.gd")
@@ -14,8 +16,8 @@ signal runtime_values_recalculated
 const GRID_SIZE_METERS := 1.0
 const BODY_SIZE_METERS := Vector2(0.5, 0.5)
 const CAMERA_DEFAULT_ZOOM := 1.0
-const CAMERA_MIN_ZOOM := 0.8
-const CAMERA_MAX_ZOOM := 1.8
+const CAMERA_MIN_ZOOM := 1.0
+const CAMERA_MAX_ZOOM := 3.5
 const CAMERA_ZOOM_STEP := 0.1
 const MIN_SLASH_COOLDOWN := 0.1
 const DEFAULT_SLASH_RANGE_METERS := 0.5
@@ -25,7 +27,6 @@ const EQUIPMENT_SOURCE_PREFIX := "equipment:"
 const ARTIFACT_SOURCE_PREFIX := "artifact:"
 const PASSIVE_SOURCE_PREFIX := "passive:"
 const STATUS_SOURCE_PREFIX := "status:"
-
 var faction_id: String = "player"
 var ai_id: String = ""
 var current_target_enemy: Node2D = null
@@ -48,11 +49,17 @@ var gameplay_locked: bool = false
 var dead_locked: bool = false
 var death_request_queued: bool = false
 var current_camera_zoom: float = CAMERA_DEFAULT_ZOOM
+var current_facing_direction: Vector2 = Vector2.RIGHT
+var camera_default_zoom_setting: float = CAMERA_DEFAULT_ZOOM
+var camera_min_zoom_setting: float = CAMERA_MIN_ZOOM
+var camera_max_zoom_setting: float = CAMERA_MAX_ZOOM
+var camera_zoom_step_setting: float = CAMERA_ZOOM_STEP
 var slash_attack_in_progress: bool = false
 var enemies_in_slash_range: Array[Node2D] = []
 var slash_range_area: Area2D
 var slash_range_shape: CollisionShape2D
 var slash_effect_tween: Tween
+var overhead_display: Node
 
 @export var meters_to_pixels: float = 16.0
 @export var village_path: NodePath
@@ -67,11 +74,13 @@ var slash_effect_tween: Tween
 
 
 func _ready() -> void:
+	_ensure_overhead_display()
 	_ensure_slash_range_area()
 	_connect_slash_range_signals()
 	_apply_character_stats()
 	_apply_body_visual()
 	_apply_slash_skill_stats()
+	_sync_overhead_display()
 	attack_arc.visible = false
 	attack_arc.z_as_relative = false
 	attack_arc.z_index = GameLayers.Z_EFFECTS
@@ -91,6 +100,8 @@ func _physics_process(delta: float) -> void:
 	var input_vector: Vector2 = Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	if input_vector == Vector2.ZERO:
 		input_vector = _get_keyboard_input_vector()
+	if input_vector != Vector2.ZERO:
+		current_facing_direction = input_vector.normalized()
 
 	var speed_pixels: float = get_move_speed() * meters_to_pixels
 	var motion: Vector2 = input_vector * speed_pixels * delta
@@ -119,10 +130,10 @@ func _unhandled_input(event: InputEvent) -> void:
 	if village != null and village.has_method("is_result_showing") and village.is_result_showing():
 		return
 	if mouse_event.button_index == MOUSE_BUTTON_WHEEL_UP:
-		_adjust_camera_zoom(-CAMERA_ZOOM_STEP)
+		_adjust_camera_zoom(camera_zoom_step_setting)
 		get_viewport().set_input_as_handled()
 	elif mouse_event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-		_adjust_camera_zoom(CAMERA_ZOOM_STEP)
+		_adjust_camera_zoom(-camera_zoom_step_setting)
 		get_viewport().set_input_as_handled()
 
 
@@ -132,6 +143,16 @@ func configure_world(world_meters_to_pixels: float) -> void:
 	_apply_slash_skill_stats()
 	_configure_collision_layers()
 	_apply_camera_zoom()
+	_sync_overhead_display()
+
+
+func configure_camera_zoom_limits(default_zoom: float, min_zoom: float, max_zoom: float, step: float = CAMERA_ZOOM_STEP) -> void:
+	camera_min_zoom_setting = minf(min_zoom, max_zoom)
+	camera_max_zoom_setting = maxf(min_zoom, max_zoom)
+	camera_default_zoom_setting = clampf(default_zoom, camera_min_zoom_setting, camera_max_zoom_setting)
+	camera_zoom_step_setting = maxf(step, 0.01)
+	current_camera_zoom = clampf(camera_default_zoom_setting, camera_min_zoom_setting, camera_max_zoom_setting)
+	_apply_camera_zoom()
 
 
 func get_grid_position() -> Vector2:
@@ -139,6 +160,19 @@ func get_grid_position() -> Vector2:
 		floor(position.x / (meters_to_pixels * GRID_SIZE_METERS)),
 		floor(position.y / (meters_to_pixels * GRID_SIZE_METERS))
 	)
+
+
+func get_facing_direction() -> Vector2:
+	var facing := current_facing_direction.normalized()
+	if facing == Vector2.ZERO:
+		return Vector2.RIGHT
+	return facing
+
+
+func set_facing_direction(direction: Vector2) -> void:
+	if direction == Vector2.ZERO:
+		return
+	current_facing_direction = direction.normalized()
 
 
 func get_hitbox_half_size_pixels() -> Vector2:
@@ -153,6 +187,11 @@ func get_current_health() -> int:
 	return current_health
 
 
+func get_display_name() -> String:
+	var current_character := _get_game_state_character()
+	return str(current_character.get("display_name", current_character.get("player_name", current_character.get("name", "玩家主角"))))
+
+
 func get_faction_id() -> String:
 	return faction_id
 
@@ -163,6 +202,12 @@ func get_ai_id() -> String:
 
 func get_max_health() -> int:
 	return max_health
+
+
+func get_overhead_display_debug_state() -> Dictionary:
+	if overhead_display == null or not is_instance_valid(overhead_display):
+		return {}
+	return overhead_display.call("get_debug_state")
 
 
 func is_alive() -> bool:
@@ -199,6 +244,7 @@ func lock_for_death() -> void:
 	dead_locked = true
 	gameplay_locked = true
 	current_health = 0
+	_sync_overhead_display()
 	current_target_enemy = null
 	slash_attack_in_progress = false
 	enemies_in_slash_range.clear()
@@ -218,6 +264,7 @@ func take_damage(damage: int, _source_name: String = "") -> void:
 
 	var final_damage: int = int(round(get_taken_damage_value(float(damage))))
 	current_health = max(current_health - final_damage, 0)
+	_sync_overhead_display()
 	body.color = Color(1.0, 0.45, 0.45, 1.0)
 	var tween: Tween = create_tween()
 	tween.tween_interval(0.12)
@@ -902,6 +949,35 @@ func _ensure_slash_range_area() -> void:
 	slash_range_area.add_child(slash_range_shape)
 
 
+func _ensure_overhead_display() -> void:
+	if overhead_display != null and is_instance_valid(overhead_display):
+		return
+	var existing := get_node_or_null("OverheadDisplay")
+	if existing != null and existing.has_method("sync_display"):
+		overhead_display = existing
+		return
+	var instance := OverheadDisplayScene.instantiate()
+	if instance != null and instance.has_method("sync_display"):
+		overhead_display = instance
+		overhead_display.name = "OverheadDisplay"
+		add_child(overhead_display)
+
+
+func _sync_overhead_display() -> void:
+	_ensure_overhead_display()
+	if overhead_display == null or not is_instance_valid(overhead_display):
+		return
+	overhead_display.sync_display(
+		get_display_name(),
+		OverheadDisplayScript.STYLE_GREEN,
+		false,
+		get_current_health(),
+		get_max_health(),
+		{},
+		10
+	)
+
+
 func _connect_slash_range_signals() -> void:
 	_ensure_slash_range_area()
 	if slash_range_area == null:
@@ -981,8 +1057,18 @@ func _apply_camera_zoom() -> void:
 		camera.zoom = Vector2(current_camera_zoom, current_camera_zoom)
 
 
+func get_camera_zoom_limits() -> Dictionary:
+	return {
+		"default": camera_default_zoom_setting,
+		"min": camera_min_zoom_setting,
+		"max": camera_max_zoom_setting,
+		"step": camera_zoom_step_setting,
+		"current": current_camera_zoom,
+	}
+
+
 func _adjust_camera_zoom(delta_zoom: float) -> void:
-	current_camera_zoom = clampf(current_camera_zoom + delta_zoom, CAMERA_MIN_ZOOM, CAMERA_MAX_ZOOM)
+	current_camera_zoom = clampf(current_camera_zoom + delta_zoom, camera_min_zoom_setting, camera_max_zoom_setting)
 	_apply_camera_zoom()
 
 
@@ -1149,6 +1235,7 @@ func _recalculate_character_state(recover_full_health: bool = false) -> void:
 		current_health = max_health
 	else:
 		current_health = clampi(current_health, 0, max_health)
+	_sync_overhead_display()
 	_apply_slash_skill_stats()
 	_sync_runtime_character_to_game_state()
 	emit_signal("runtime_values_recalculated")
@@ -1277,6 +1364,7 @@ func _trigger_slash_attack(target_enemy: Node2D) -> void:
 	var direction := (target_enemy.global_position - global_position).normalized()
 	if direction == Vector2.ZERO:
 		direction = Vector2.RIGHT
+	current_facing_direction = direction
 	current_target_enemy = target_enemy
 	slash_attack_in_progress = true
 	_show_slash_attack_arc(direction)

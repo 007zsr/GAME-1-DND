@@ -1,0 +1,29 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/scripts/overhead_display.gd" id="1_overhead"]
+
+[node name="OverheadDisplay" type="Node2D"]
+script = ExtResource("1_overhead")
+
+[node name="NameLabel" type="Label" parent="."]
+offset_left = -48.0
+offset_top = -28.0
+offset_right = 48.0
+offset_bottom = -10.0
+horizontal_alignment = 1
+vertical_alignment = 1
+text = "Unit"
+
+[node name="BarBackground" type="ColorRect" parent="."]
+offset_left = -24.0
+offset_top = 0.0
+offset_right = 24.0
+offset_bottom = 6.0
+color = Color(0.16, 0.06, 0.06, 0.88)
+
+[node name="BarFill" type="ColorRect" parent="BarBackground"]
+offset_left = 1.0
+offset_top = 1.0
+offset_right = 47.0
+offset_bottom = 5.0
+color = Color(0.9, 0.23, 0.23, 1)

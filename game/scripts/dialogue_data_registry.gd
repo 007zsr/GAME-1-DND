@@ -140,6 +140,86 @@ const DIALOGUES := {
 			},
 		},
 	},
+	"tutorial_boss_clear_goddess": {
+		"dialogue_id": "tutorial_boss_clear_goddess",
+		"start_node_id": "tutorial_clear",
+		"nodes": {
+			"tutorial_clear": {
+				"speaker_name": "复活女神",
+				"base_text": "做得不错。你已经穿过了这场一次性的启程试炼，也证明了自己能在新世界里继续活下去。这里的战斗到此为止，真正漫长的选择，现在才要开始。",
+				"conditional_text_segments": [
+					{
+						"conditions": [{"type": "event_flag_is", "flag_id": "tutorial_completed", "value": true}],
+						"fragments": [
+							{"text": "接下来，我会把你送往"},
+							{"text": "主神空间", "highlight": true},
+							{"text": "。那里会成为你之后往返诸界的中枢。"},
+						],
+					},
+				],
+				"options": [
+					{
+						"id": "enter_god_space",
+						"text": "带我去主神空间。",
+						"actions": [
+							{"type": "call_hook", "hook_id": "transition_to_god_space"},
+						],
+					},
+				],
+			},
+		},
+	},
+	"god_space_goddess_intro": {
+		"dialogue_id": "god_space_goddess_intro",
+		"start_node_id": "hub_intro",
+		"nodes": {
+			"hub_intro": {
+				"speaker_name": "复活女神",
+				"base_text": "这里就是主神空间。你以后每完成一段旅程，都会回到这里整理状态、确认方向，然后再次迈向新的世界。",
+				"conditional_text_segments": [
+					{
+						"conditions": [{"type": "event_flag_is", "flag_id": "seen_god_space_intro", "value": false}],
+						"fragments": [
+							{"text": "你眼前的正式入口目前通往四条不同路线："},
+							{"text": "修仙世界", "highlight": true},
+							{"text": "、"},
+							{"text": "异能世界", "highlight": true},
+							{"text": "、"},
+							{"text": "未来世界", "highlight": true},
+							{"text": "，以及"},
+							{"text": "古代世界", "highlight": true},
+							{"text": "。先从你已经能踏入的那一条开始吧。"},
+						],
+					},
+					{
+						"conditions": [{"type": "event_flag_is", "flag_id": "seen_god_space_intro", "value": true}],
+						"fragments": [
+							{"text": "世界出口还在那里。准备好之后，就去挑选下一段旅程。"},
+						],
+					},
+				],
+				"options": [
+					{
+						"id": "acknowledge_hub",
+						"text": "我明白了，会从这里选择下一条路。",
+						"conditions": [{"type": "event_flag_is", "flag_id": "seen_god_space_intro", "value": false}],
+						"actions": [
+							{"type": "set_event_flag", "flag_id": "seen_god_space_intro", "value": true},
+							{"type": "end_dialogue", "reason": "god_space_intro_complete"},
+						],
+					},
+					{
+						"id": "leave_hub_guidance",
+						"text": "我先去看看世界入口。",
+						"conditions": [{"type": "event_flag_is", "flag_id": "seen_god_space_intro", "value": true}],
+						"actions": [
+							{"type": "end_dialogue", "reason": "god_space_intro_repeat_complete"},
+						],
+					},
+				],
+			},
+		},
+	},
 }
 
 

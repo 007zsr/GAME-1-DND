@@ -1,6 +1,8 @@
 ﻿extends SceneTree
 
 const ItemSystem = preload("res://game/scripts/item_system.gd")
+const GameplaySceneContract = preload("res://game/scripts/gameplay_scene_contract.gd")
+const SkillRegistry = preload("res://game/skills/skill_registry.gd")
 const CHECK_NAME := "check_gameplay_regressions"
 const CHECK_TIMEOUT_SEC := 30.0
 
@@ -59,6 +61,14 @@ func _run_check() -> void:
 		return
 	root.add_child(village)
 	await _await_frames(2, "waiting for newbie_village scene bootstrap")
+
+	var contract_errors := GameplaySceneContract.validate_scene(village, {
+		"require_dialogue_registration": true,
+	})
+	if not contract_errors.is_empty():
+		push_error("newbie_village scene contract errors: %s" % str(contract_errors))
+		quit(1)
+		return
 
 	var player: Node = village.get_player_node()
 	if player == null:
@@ -220,18 +230,55 @@ func _run_check() -> void:
 	wheel_up.pressed = true
 	player._unhandled_input(wheel_up)
 	await _await_frames(1, "waiting for mouse wheel zoom")
-	if player.camera.zoom.x >= zoom_before:
+	if player.camera.zoom.x <= zoom_before:
 		push_error("mouse wheel up did not zoom in")
+		quit(1)
+		return
+	var zoom_limits: Dictionary = player.get_camera_zoom_limits()
+	for _index in range(12):
+		player._unhandled_input(wheel_up)
+	await _await_frames(1, "waiting for mouse wheel zoom-in clamp")
+	if player.camera.zoom.x > float(zoom_limits.get("max", 999.0)) + 0.0001:
+		push_error("mouse wheel up exceeded zoom max: %s > %s" % [str(player.camera.zoom.x), str(zoom_limits.get("max"))])
+		quit(1)
+		return
+	var wheel_down := InputEventMouseButton.new()
+	wheel_down.button_index = MOUSE_BUTTON_WHEEL_DOWN
+	wheel_down.pressed = true
+	for _index in range(12):
+		player._unhandled_input(wheel_down)
+	await _await_frames(1, "waiting for mouse wheel zoom-out clamp")
+	if player.camera.zoom.x < float(zoom_limits.get("min", 0.0)) - 0.0001:
+		push_error("mouse wheel down exceeded zoom min: %s < %s" % [str(player.camera.zoom.x), str(zoom_limits.get("min"))])
 		quit(1)
 		return
 
 	var enemy := _get_first_hostile_enemy(village)
+	var ranged_enemy := _get_enemy_by_template_id(village, "ranged_grunt")
+	var registered_skill_ids := SkillRegistry.get_registered_skill_ids()
+	for expected_skill_id in ["melee_grunt_slash", "ranged_grunt_energy_shot", "ranged_grunt_close_counter", "boss_guardian_triple_cleave"]:
+		if not registered_skill_ids.has(expected_skill_id):
+			push_error("SkillRegistry missing formal skill_id: %s in %s" % [expected_skill_id, str(registered_skill_ids)])
+			quit(1)
+			return
 	if enemy == null:
 		push_error("no hostile enemy found for slash regression check")
 		quit(1)
 		return
+	if ranged_enemy == null:
+		push_error("ranged grunt missing for visual regression check")
+		quit(1)
+		return
 	if enemy.get_owned_skill_ids().is_empty():
 		push_error("enemy skill runtime missing owned skills")
+		quit(1)
+		return
+	if not enemy.get_owned_skill_ids().has("melee_grunt_slash"):
+		push_error("melee grunt did not migrate to melee_grunt_slash: %s" % str(enemy.get_owned_skill_ids()))
+		quit(1)
+		return
+	if not ranged_enemy.get_owned_skill_ids().has("ranged_grunt_energy_shot") or not ranged_enemy.get_owned_skill_ids().has("ranged_grunt_close_counter"):
+		push_error("ranged grunt missing formal skill ids: %s" % str(ranged_enemy.get_owned_skill_ids()))
 		quit(1)
 		return
 	var enemy_request_ok: bool = enemy.request_skill_use_by_mode("primary")
@@ -251,12 +298,55 @@ func _run_check() -> void:
 		])
 		quit(1)
 		return
+	if enemy.get_last_executed_skill_id() != "melee_grunt_slash":
+		push_error("melee grunt executed unexpected primary skill: %s" % str(enemy.get_last_executed_skill_id()))
+		quit(1)
+		return
+	var ranged_primary_ok: bool = ranged_enemy.request_skill_use_by_mode("primary")
+	if not ranged_primary_ok:
+		push_error("ranged grunt primary request failed: %s" % str(ranged_enemy.get_skill_runtime_state_snapshot()))
+		quit(1)
+		return
+	await _await_physics_frames(50, "waiting for ranged primary skill execution window")
+	if ranged_enemy.get_last_executed_skill_id() != "ranged_grunt_energy_shot":
+		push_error("ranged grunt primary execution mismatch: %s" % str(ranged_enemy.get_last_executed_skill_id()))
+		quit(1)
+		return
+	var ranged_fallback_ok: bool = ranged_enemy.request_skill_use_by_mode("fallback")
+	if not ranged_fallback_ok:
+		push_error("ranged grunt fallback request failed: %s" % str(ranged_enemy.get_skill_runtime_state_snapshot()))
+		quit(1)
+		return
+	await _await_physics_frames(40, "waiting for ranged fallback skill execution window")
+	if ranged_enemy.get_last_executed_skill_id() != "ranged_grunt_close_counter":
+		push_error("ranged grunt fallback execution mismatch: %s" % str(ranged_enemy.get_last_executed_skill_id()))
+		quit(1)
+		return
 
 	var boss := _get_boss_enemy(village)
 	if boss == null:
 		push_error("boss enemy missing for skill execution regression check")
 		quit(1)
 		return
+	if not _assert_enemy_visual_config(
+		ranged_enemy,
+		"ranged grunt",
+		"res://game/assets/textures/characters/enemies/ranged_grunt/animations/ranged_grunt_sprite_frames_v001.tres",
+		"res://game/assets/textures/characters/enemies/ranged_grunt/spritesheets/ranged_grunt_sheet_v001.png"
+	):
+		return
+	if not _assert_enemy_visual_config(
+		boss,
+		"boss guardian",
+		"",
+		"res://game/assets/textures/characters/enemies/newbie_boss/spritesheets/newbie_boss_sheet_v002.png"
+	):
+		return
+	if not boss.get_owned_skill_ids().has("boss_guardian_triple_cleave"):
+		push_error("boss guardian missing formal triple cleave skill id: %s" % str(boss.get_owned_skill_ids()))
+		quit(1)
+		return
+	var boss_position_before: Vector2 = boss.global_position
 	var boss_request_ok: bool = boss.request_skill_use_by_mode("primary")
 	if not boss_request_ok:
 		push_error("boss primary skill request returned false: %s" % str(boss.get_skill_runtime_state_snapshot()))
@@ -270,6 +360,23 @@ func _run_check() -> void:
 		])
 		quit(1)
 		return
+	if boss.get_last_executed_skill_id() != "boss_guardian_triple_cleave":
+		push_error("boss executed unexpected primary skill: %s" % str(boss.get_last_executed_skill_id()))
+		quit(1)
+		return
+	if boss.global_position.distance_to(boss_position_before) > 1.0:
+		push_error("boss moved during triple cleave execution: %s -> %s" % [str(boss_position_before), str(boss.global_position)])
+		quit(1)
+		return
+	if boss.has_method("get_attack_execution_debug_state"):
+		var boss_attack_state: Dictionary = boss.get_attack_execution_debug_state()
+		var current_state: Dictionary = boss_attack_state.get("current_state", {})
+		var last_state: Dictionary = boss_attack_state.get("last_state", {})
+		var sequence_type := str(current_state.get("sequence_type", last_state.get("sequence_type", "")))
+		if sequence_type != "multi_stage_sector":
+			push_error("boss triple cleave did not record multi-stage sector execution: %s" % str(boss_attack_state))
+			quit(1)
+			return
 
 	if not village.request_open_overlay(player_menu):
 		push_error("failed to reopen player menu for skills page validation")
@@ -354,9 +461,15 @@ func _run_check() -> void:
 		push_error("slash auto trigger did not start cooldown")
 		quit(1)
 		return
-	var enemy_was_damaged := true
-	if is_instance_valid(enemy):
-		enemy_was_damaged = int(enemy.get_enemy_data().get("health", 0)) < enemy_before
+	var enemy_was_damaged := not is_instance_valid(enemy)
+	for _attempt in range(12):
+		if not is_instance_valid(enemy):
+			enemy_was_damaged = true
+			break
+		if int(enemy.get_enemy_data().get("health", 0)) < enemy_before:
+			enemy_was_damaged = true
+			break
+		await _await_frames(1, "waiting for slash auto damage registration")
 	if not enemy_was_damaged:
 		push_error("slash auto trigger did not damage nearby enemy")
 		quit(1)
@@ -418,6 +531,46 @@ func _get_boss_enemy(village: Node) -> Node:
 		if str(enemy_data.get("template_id", "")) == "boss_guardian":
 			return enemy_data.get("node")
 	return null
+
+
+func _get_enemy_by_template_id(village: Node, template_id: String) -> Node:
+	for entry in village.enemy_registry.values():
+		var enemy_data: Dictionary = entry as Dictionary
+		if str(enemy_data.get("template_id", "")) == template_id:
+			return enemy_data.get("node")
+	return null
+
+
+func _assert_enemy_visual_config(enemy: Node, label: String, expected_frames_path: String, expected_sheet_path: String) -> bool:
+	if enemy == null or not enemy.has_method("get_visual_debug_state"):
+		push_error("%s visual debug state missing" % label)
+		quit(1)
+		return false
+	var visual_state: Dictionary = enemy.get_visual_debug_state()
+	if not bool(visual_state.get("uses_sprite_visuals", false)):
+		push_error("%s sprite visuals not enabled" % label)
+		quit(1)
+		return false
+	if str(visual_state.get("configured_sprite_frames_path", "")) != expected_frames_path:
+		push_error("%s sprite frames path mismatch: %s" % [label, str(visual_state.get("configured_sprite_frames_path", ""))])
+		quit(1)
+		return false
+	var actual_sheet_path := str(visual_state.get("sheet_path", ""))
+	if expected_sheet_path.is_empty():
+		if not actual_sheet_path.is_empty():
+			push_error("%s sheet path should be empty but was %s" % [label, actual_sheet_path])
+			quit(1)
+			return false
+	else:
+		if actual_sheet_path != expected_sheet_path:
+			push_error("%s sheet path mismatch: %s" % [label, actual_sheet_path])
+			quit(1)
+			return false
+	if str(visual_state.get("current_animation", "")).is_empty():
+		push_error("%s current animation empty" % label)
+		quit(1)
+		return false
+	return true
 
 
 func _array_contains_text(values: Array, needle: String) -> bool:

@@ -5,3 +5,18 @@ debug_logs/
 logs
 godot.log
 godot*.log
+
+# Local-only internal docs and cleanup records
+project_docs/
+cleanup/
+litter_box/
+_deprecated/
+
+# Internal or placeholder markdown files that are not useful in the public repo
+game/assets/**/README.md
+
+# Local-only Boss source strips and superseded experiments
+game/assets/textures/characters/enemies/newbie_boss/directions/
+game/assets/textures/characters/enemies/newbie_boss/animations/newbie_boss_sprite_frames_v001.tres
+game/assets/textures/characters/enemies/newbie_boss/animations/newbie_boss_sprite_frames_v002.tres
+game/assets/textures/characters/enemies/newbie_boss/spritesheets/newbie_boss_sheet_v001.png

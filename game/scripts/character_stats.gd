@@ -25,7 +25,7 @@ const B_STAT_ORDER := [
 	{"key": "move_speed", "label": "\u79fb\u52a8\u901f\u5ea6"},
 ]
 
-const FIXED_MOVE_SPEED := 2.0
+const FIXED_MOVE_SPEED := 8.0
 
 const B_STAT_FORMULA_INFO := {
 	"accuracy": {

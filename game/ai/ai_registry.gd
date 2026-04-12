@@ -8,6 +8,7 @@ const PRESET_PATHS := {
 	"enemy_archer_001": "res://game/ai/presets/enemy_archer_001.tres",
 	"boss_guardian_phase1": "res://game/ai/presets/boss_guardian_phase1.tres",
 	"boss_guardian_phase2": "res://game/ai/presets/boss_guardian_phase2.tres",
+	"frost_white_wolf_hunter_001": "res://game/ai/presets/frost_white_wolf_hunter_001.tres",
 	"npc_guard_friendly_idle": "res://game/ai/presets/npc_guard_friendly_idle.tres",
 	"npc_guard_enemy_combat": "res://game/ai/presets/npc_guard_enemy_combat.tres",
 }
