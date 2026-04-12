@@ -13,7 +13,7 @@
 
 ## 本地运行
 
-1. 用 Godot 打开仓库根目录下的 [project.godot](/e:/working_VSCODE/2026_4_8_game/project.godot)
+1. 用 Godot 打开仓库根目录下的 `project.godot`
 2. 直接运行项目
 
 ## 项目结构
